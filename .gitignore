@@ -1,7 +1,5 @@
 node_modules
 dist
-.env
-.env.local
 *.log
 .DS_Store
 data/
@@ -14,3 +12,7 @@ BLOCKCHAIN_FOR_BEGINNERS.md
 METAMASK_SETUP.md
 marketPlace.md
 think.md
+config.bat
+branch_structure.json
+temp_auto_push.bat
+temp_interactive_push.bat
