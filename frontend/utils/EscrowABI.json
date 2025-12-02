@@ -1,0 +1,22 @@
+[
+  "function createEscrow(string memory _productId, address _seller) external payable",
+  "function acceptOrder(uint256 _orderId) external",
+  "function markShipped(uint256 _orderId) external",
+  "function confirmDelivery(uint256 _orderId) external",
+  "function releaseFunds(uint256 _orderId) external",
+  "function openDispute(uint256 _orderId, string memory _reason) external",
+  "function resolveDispute(uint256 _orderId, address _winner) external",
+  "function checkTimeout(uint256 _orderId) external",
+  "function getOrder(uint256 _orderId) external view returns (tuple(uint256 orderId, address buyer, address seller, uint256 amount, uint8 status, uint256 createdAt, uint256 timeoutAt, string productId, bool disputeOpened, address arbitrator, string disputeReason))",
+  "function getOrderStatus(uint256 _orderId) external view returns (uint8)",
+  "function orderCounter() external view returns (uint256)",
+  "function admin() external view returns (address)",
+  "event EscrowCreated(uint256 indexed orderId, address indexed buyer, address indexed seller, uint256 amount, string productId)",
+  "event OrderAccepted(uint256 indexed orderId, address indexed seller)",
+  "event OrderShipped(uint256 indexed orderId)",
+  "event DeliveryConfirmed(uint256 indexed orderId)",
+  "event FundsReleased(uint256 indexed orderId, address indexed recipient, uint256 amount)",
+  "event DisputeOpened(uint256 indexed orderId, address indexed buyer, string reason)",
+  "event DisputeResolved(uint256 indexed orderId, address indexed winner, uint256 amount, address indexed arbitrator)",
+  "event OrderCompleted(uint256 indexed orderId)"
+]
