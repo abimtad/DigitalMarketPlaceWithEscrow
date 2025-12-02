@@ -9,6 +9,7 @@ A security‑focused, trustless marketplace where funds are held in a smart‑co
 All payments happen on a local Hardhat network by default. You can later point the app at a public testnet by changing environment variables and redeploying the contract.
 
 What you get out‑of‑the‑box:
+
 - A working escrow lifecycle (create → accept → ship → deliver → complete)
 - Buyer‑opened disputes and admin resolution
 - Timeout refunds when a party stalls
@@ -65,6 +66,7 @@ npx hardhat run scripts/deploy.js --network localhost
 ```
 
 Copy the deployed contract address and update:
+
 - `frontend/utils/contractAddress.ts` - Set `CONTRACT_ADDRESS`
 - `backend/src/config/contract.json` - Set `address`
 
@@ -151,11 +153,13 @@ project-root/
 ## 🛠 Tech Stack
 
 ### Smart Contract Layer
+
 - **Solidity** ^0.8.20
 - **Hardhat**
 - **Ethers v6**
 
 ### Frontend
+
 - **Next.js 14** (App Router)
 - **TypeScript**
 - **Tailwind CSS**
@@ -163,6 +167,7 @@ project-root/
 - **Zustand** (for state management)
 
 ### Backend
+
 - **Express.js**
 - **TypeScript (ESM)**
 - **lowDb** (local JSON database)
@@ -171,6 +176,7 @@ project-root/
 ## 📡 API Routes
 
 ### Products
+
 - `GET /api/products` - Get all products
 - `GET /api/products/:id` - Get single product
 - `POST /api/products` - Create product
@@ -178,15 +184,18 @@ project-root/
 - `DELETE /api/products/:id` - Delete product
 
 ### Disputes
+
 - `GET /api/disputes` - Get all disputes
 - `GET /api/disputes/:orderId` - Get dispute by order ID
 - `POST /api/disputes` - Create dispute
 
 ### Arbitration
+
 - `POST /api/arbitration/resolve` - Resolve a dispute
 - `GET /api/arbitration` - Get all arbitrations
 
 ### Notifications
+
 - `GET /api/notifications/:userId` - Get notifications for user
 - `POST /api/notifications` - Create notification
 
@@ -210,18 +219,22 @@ npx hardhat test
 ## 🧩 Configuration & Environments
 
 ### Frontend (Next.js)
+
 - Reads `NEXT_PUBLIC_CONTRACT_ADDRESS` and `NEXT_PUBLIC_RPC_URL` at build/runtime.
 - Uses `frontend/utils/contractAddress.ts` as a fallback if env vars are not set.
 - Connects via MetaMask (Ethers v6 `BrowserProvider`).
 
 ### Backend (Express)
+
 - Stores the contract address in `backend/src/config/contract.json`.
 - Persists product/dispute/notification data in LowDB JSON files under `backend/data/`.
 
 ## 📝 Environment Variables
 
 ### Frontend
+
 Create `.env.local`:
+
 ```
 NEXT_PUBLIC_CONTRACT_ADDRESS=0x...
 NEXT_PUBLIC_RPC_URL=http://127.0.0.1:8545
@@ -229,7 +242,9 @@ NEXT_PUBLIC_API_URL=http://localhost:4000/api
 ```
 
 ### Backend
+
 Create `.env`:
+
 ```
 PORT=4000
 ```
@@ -237,27 +252,31 @@ PORT=4000
 ## 🔧 How To Modify or Extend
 
 ### Change the Smart Contract
+
 1. Edit `blockchain/contracts/Escrow.sol`.
 2. Run tests: `cd blockchain && npx hardhat test`.
 3. Start a node (if needed): `npx hardhat node`.
 4. Deploy again: `npx hardhat run scripts/deploy.js --network localhost`.
 5. Update the deployed address in:
-    - `frontend/.env.local` as `NEXT_PUBLIC_CONTRACT_ADDRESS`, or
-    - `frontend/utils/contractAddress.ts` fallback, and
-    - `backend/src/config/contract.json`.
+   - `frontend/.env.local` as `NEXT_PUBLIC_CONTRACT_ADDRESS`, or
+   - `frontend/utils/contractAddress.ts` fallback, and
+   - `backend/src/config/contract.json`.
 
 ### Change the Frontend
+
 - Pages live in `frontend/app/*` using the App Router.
 - UI components in `frontend/components/*` and `frontend/components/ui/*`.
 - Contract access is centralized in `frontend/hooks/useContract.ts`.
 - Run: `cd frontend && npm run dev`.
 
 ### Change the Backend
+
 - Express routes in `backend/src/routes/*`.
 - LowDB models/utilities in `backend/src/models` and `backend/src/utils`.
 - Run: `cd backend && npm run dev`.
 
 ### Deploy to a Testnet (Optional)
+
 1. Add a network to `blockchain/hardhat.config.js` (e.g., Sepolia) with an RPC URL and private key.
 2. Deploy: `npx hardhat run scripts/deploy.js --network sepolia`.
 3. Set the address in `frontend/.env.local` → `NEXT_PUBLIC_CONTRACT_ADDRESS` and update backend config.
@@ -273,13 +292,13 @@ PORT=4000
 
 ## 📦 Commands Cheatsheet
 
-| Task             | Command                                                 |
-| ---------------- | ------------------------------------------------------- |
-| Start blockchain | `cd blockchain && npx hardhat node`                     |
+| Task             | Command                                                                  |
+| ---------------- | ------------------------------------------------------------------------ |
+| Start blockchain | `cd blockchain && npx hardhat node`                                      |
 | Deploy contract  | `cd blockchain && npx hardhat run scripts/deploy.js --network localhost` |
-| Run backend      | `cd backend && npm run dev`                            |
-| Run frontend     | `cd frontend && npm run dev`                            |
-| Test contract    | `cd blockchain && npx hardhat test`                     |
+| Run backend      | `cd backend && npm run dev`                                              |
+| Run frontend     | `cd frontend && npm run dev`                                             |
+| Test contract    | `cd blockchain && npx hardhat test`                                      |
 
 ## 🐛 Troubleshooting
 
@@ -289,13 +308,16 @@ PORT=4000
 - **Backend errors**: Ensure `data/` directory exists and is writable
 
 ## 🔒 Security Notes
+
 - Admin can resolve disputes and direct funds to buyer or seller — keep the admin key safe.
 - Contract rejects direct `receive()` payments and enforces role checks.
 - Dispute state blocks delivery confirmation and fund releases.
 - Timeouts refund the buyer if the order doesn’t progress.
 
 ## 🤝 Contributing
+
 Pull requests are welcome! For larger changes:
+
 - Open an issue describing the enhancement/bug.
 - Add/adjust tests under `blockchain/test/` when changing the contract.
 - Keep commits small and focused; prefer conventional commit prefixes (e.g., `frontend:`, `blockchain:`, `backend:`).
