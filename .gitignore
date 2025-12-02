@@ -8,3 +8,9 @@ data/
 .cache
 artifacts
 coverage
+
+# Local documentation files to keep untracked
+BLOCKCHAIN_FOR_BEGINNERS.md
+METAMASK_SETUP.md
+marketPlace.md
+think.md
