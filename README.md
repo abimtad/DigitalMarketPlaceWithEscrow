@@ -1,8 +1,18 @@
 # 📄 Decentralized Marketplace with Escrow
 
-A **Decentralized Marketplace with Smart Escrow** built for learning and demonstration.
-All payments happen using **local ETH** from Hardhat's local blockchain.
-Users interact through a **Next.js frontend**, MetaMask wallet, and an **Express backend** for helper features like product listings & dispute logs.
+A security‑focused, trustless marketplace where funds are held in a smart‑contract escrow until release conditions are met. It’s designed for learning and rapid iteration with a clear separation of concerns:
+
+- Smart contracts (Solidity + Hardhat)
+- Web UI (Next.js + Tailwind + Ethers v6)
+- API helpers (Express + LowDB for product/dispute data)
+
+All payments happen on a local Hardhat network by default. You can later point the app at a public testnet by changing environment variables and redeploying the contract.
+
+What you get out‑of‑the‑box:
+- A working escrow lifecycle (create → accept → ship → deliver → complete)
+- Buyer‑opened disputes and admin resolution
+- Timeout refunds when a party stalls
+- Clean UI with dark mode, wallet connect/disconnect, and safety checks
 
 ## 🚀 Quick Start
 
@@ -10,6 +20,13 @@ Users interact through a **Next.js frontend**, MetaMask wallet, and an **Express
 
 - Node.js 18+ and npm
 - MetaMask browser extension
+
+### 0. Clone the repository
+
+```bash
+git clone https://github.com/your-username/digitalMarketPlace.git
+cd digitalMarketPlace
+```
 
 ### 1. Install Dependencies
 
@@ -50,6 +67,8 @@ npx hardhat run scripts/deploy.js --network localhost
 Copy the deployed contract address and update:
 - `frontend/utils/contractAddress.ts` - Set `CONTRACT_ADDRESS`
 - `backend/src/config/contract.json` - Set `address`
+
+Alternatively, set `NEXT_PUBLIC_CONTRACT_ADDRESS` in `frontend/.env.local` (see Environment section) so you don’t have to edit source.
 
 ### 4. Start Backend
 
@@ -188,6 +207,17 @@ cd blockchain
 npx hardhat test
 ```
 
+## 🧩 Configuration & Environments
+
+### Frontend (Next.js)
+- Reads `NEXT_PUBLIC_CONTRACT_ADDRESS` and `NEXT_PUBLIC_RPC_URL` at build/runtime.
+- Uses `frontend/utils/contractAddress.ts` as a fallback if env vars are not set.
+- Connects via MetaMask (Ethers v6 `BrowserProvider`).
+
+### Backend (Express)
+- Stores the contract address in `backend/src/config/contract.json`.
+- Persists product/dispute/notification data in LowDB JSON files under `backend/data/`.
+
 ## 📝 Environment Variables
 
 ### Frontend
@@ -203,6 +233,34 @@ Create `.env`:
 ```
 PORT=4000
 ```
+
+## 🔧 How To Modify or Extend
+
+### Change the Smart Contract
+1. Edit `blockchain/contracts/Escrow.sol`.
+2. Run tests: `cd blockchain && npx hardhat test`.
+3. Start a node (if needed): `npx hardhat node`.
+4. Deploy again: `npx hardhat run scripts/deploy.js --network localhost`.
+5. Update the deployed address in:
+    - `frontend/.env.local` as `NEXT_PUBLIC_CONTRACT_ADDRESS`, or
+    - `frontend/utils/contractAddress.ts` fallback, and
+    - `backend/src/config/contract.json`.
+
+### Change the Frontend
+- Pages live in `frontend/app/*` using the App Router.
+- UI components in `frontend/components/*` and `frontend/components/ui/*`.
+- Contract access is centralized in `frontend/hooks/useContract.ts`.
+- Run: `cd frontend && npm run dev`.
+
+### Change the Backend
+- Express routes in `backend/src/routes/*`.
+- LowDB models/utilities in `backend/src/models` and `backend/src/utils`.
+- Run: `cd backend && npm run dev`.
+
+### Deploy to a Testnet (Optional)
+1. Add a network to `blockchain/hardhat.config.js` (e.g., Sepolia) with an RPC URL and private key.
+2. Deploy: `npx hardhat run scripts/deploy.js --network sepolia`.
+3. Set the address in `frontend/.env.local` → `NEXT_PUBLIC_CONTRACT_ADDRESS` and update backend config.
 
 ## 🏁 Usage Flow
 
@@ -229,6 +287,18 @@ PORT=4000
 - **Contract not found**: Verify contract address is set correctly in both frontend and backend
 - **Transaction fails**: Check you have enough ETH in your MetaMask account
 - **Backend errors**: Ensure `data/` directory exists and is writable
+
+## 🔒 Security Notes
+- Admin can resolve disputes and direct funds to buyer or seller — keep the admin key safe.
+- Contract rejects direct `receive()` payments and enforces role checks.
+- Dispute state blocks delivery confirmation and fund releases.
+- Timeouts refund the buyer if the order doesn’t progress.
+
+## 🤝 Contributing
+Pull requests are welcome! For larger changes:
+- Open an issue describing the enhancement/bug.
+- Add/adjust tests under `blockchain/test/` when changing the contract.
+- Keep commits small and focused; prefer conventional commit prefixes (e.g., `frontend:`, `blockchain:`, `backend:`).
 
 ## 📄 License
 
